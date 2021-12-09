@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#00c2f2">
+    <!-- Google Fonts: Catamaran -->
+    <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <style type="text/css">
+    </style>
+</head>
+<body>
+    <loading>
+    <div class="loader_bg">
+        <div class="loader"></div>
+    </div>
+    </loading>
+<div id="header">
+    <nav class="top-name">
+            <div class="right-menu">
+        <a href="./shopping/home.html"> <img src="./shop-arrow.png" class="shopping" id="profile"></a>
+        </div>
+          <a href="./signin/signin.html"> <img src="./user.png" class="shopping"></a>   
+        <ul>
+           <!-- <li><a href="index.html" id="">Home</a></li>
+            <li><a href="" id="">Maps</a></li>
+            <li><a href="#collab" id="">Collaboration</a></li>
+            <li><a href="#smartMaps" id="">Machine Learning</a></li> </li>
+            <li class="req-demo-btn"><a href="./signin/signin.html" id="request-nav">SINGUP/SINGIN</a>-->
+
+                   
+        </ul>
+    </nav>
+</div>
+<!-- Static Navigation -->
+<div id="canvas">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r67/three.min.js"></script>
+</div>
+    <div class="top-static-bg puff-in-center">
+        <div id="fullpage"  style="margin-top: 218px;">
+            <h1>Finding Good</h1>
+                <div class="box">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                     <input type="text" name="" placeholder="Search for products, brands and more">
+                </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        setTimeout(function() {
+            $('.loader_bg').fadeToggle();
+        }, 2000);
+
+        $(document).ready(function() {
+            $('#fullpage').fullpage({
+                anchors: ['aiVr', 'immersive', 'maps', 'collab', 'smartMaps', 'contact' ],
+                sectionsColor: ['', '', ''],
+                scrollOverflow: true,
+                scrollBar: true,
+                css3: true,
+                keyboardScrolling: true,
+            });
+        });
+
+
+// Fix YouTube Embed Player
+        $('#stopVideo').on('click', function() {
+            //$('#popup-youtube-player').stopVideo();
+        $('#videoInModal')[0].contentWindow.postMessage('{"event":"command","func":"' + 'stopVideo' + '","args":""}', '*');    
+        });
+
+        // Fix YouTube Embed Player
+        $('.ai-vr .btn').on('click', function() {
+            //$('#popup-youtube-player').stopVideo();
+        $('#videoInModal')[0].contentWindow.postMessage('{"event":"command","func":"' + 'playVideo' + '","args":""}', '*');    
+        });
+
+
+// THREE JS BG TOP //
+var mouseX = 0,
+        mouseY = 0,
+        windowHalfX = window.innerWidth / 2,
+        windowHalfY = window.innerHeight / 2,
+        SEPARATION = 200,
+        AMOUNTX = 10,
+        AMOUNTY = 10,
+        camera,
+        scene,
+        renderer;
+
+init();
+animate();
+
+function init() {
+
+    var container,
+            separation = 300,
+            amountX = 30,
+            amountY = 30,
+            particle;
+
+    container = document.getElementById('canvas');
+    //document.body.appendChild( container );
+    //document.getElementById('canvasHeader');
+    //document.body.addClasses(container);
+
+    scene = new THREE.Scene();
+
+    renderer = new THREE.CanvasRenderer({ alpha: true }); // gradient; this can be swapped for WebGLRenderer
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    container.appendChild( renderer.domElement );
+
+    camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        1,
+        10000
+    );
+    camera.position.z = 100;
+
+    // particles
+    var PI2 = Math.PI * 2;
+    var material = new THREE.SpriteCanvasMaterial({
+        color: 0xdddddd,
+        opacity:1,
+        program: function ( context ) {
+            context.beginPath();
+            context.arc( 0, 0, 0.5, 0, PI2, true );
+            context.fill();
+        }
+    });
+
+    var geometry = new THREE.Geometry();
+
+    for ( var i = 0; i < 200; i ++ ) {
+        particle = new THREE.Sprite( material );
+        particle.position.x = Math.random() * 2 - 1;
+        particle.position.y = Math.random() * 2 - 1;
+        particle.position.z = Math.random() * 2 - 1;
+        particle.position.normalize();
+        particle.position.multiplyScalar( Math.random() * 10 + 600 );
+        particle.scale.x = particle.scale.y = 5;
+        scene.add( particle );
+        geometry.vertices.push( particle.position );
+    }
+
+    // lines
+    var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x2fffe4, opacity: 0.25 } ) );
+    scene.add( line );
+
+    // mousey
+    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+    document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+    document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+
+    window.addEventListener( 'resize', onWindowResize, false );
+
+} // end init();
+
+function onWindowResize() {
+
+    windowHalfX = window.innerWidth / 2;
+    windowHalfY = window.innerHeight / 2;
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+
+function onDocumentMouseMove(event) {
+
+    mouseX = event.clientX - windowHalfX;
+    mouseY = event.clientY - windowHalfY;
+
+}
+    //line height
+function onDocumentTouchStart( event ) {
+
+    if ( event.touches.length > 5 ) {
+
+        event.preventDefault();
+
+        mouseX = event.touches[ 0 ].pageX - windowHalfX;
+        mouseY = event.touches[ 0 ].pageY - windowHalfY;
+
+    }
+}
+
+function onDocumentTouchMove( event ) {
+
+    if ( event.touches.length == 6 ) {
+
+        event.preventDefault();
+
+        mouseX = event.touches[ 0 ].pageX - windowHalfX;
+        mouseY = event.touches[ 0 ].pageY - windowHalfY;
+
+    }
+}
+
+function animate() {
+
+    requestAnimationFrame( animate );
+    render(); 
+
+}
+    //camera aspect change position
+function render() {
+
+    camera.position.x += ( mouseX - camera.position.x ) * .002;
+    camera.position.y += ( - mouseY + 50 - camera.position.y ) * .002;
+    camera.lookAt( scene.position );
+
+    renderer.render( scene, camera );
+
+}
+
+
+
+    </script>
+</body>
+
+</html>
